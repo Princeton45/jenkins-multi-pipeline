@@ -1,0 +1,29 @@
+graph TD
+    A[Git Repository] --> B[Jenkins]
+    
+    subgraph Jenkins CI Pipeline
+        B --> C{Job Types}
+        C -->|Option 1| D[Freestyle]
+        D -->|"Simple UI-based configuration<br/>Point-and-click interface<br/>Best for simple, single-branch projects"|G
+        
+        C -->|Option 2| E[Pipeline]
+        E -->|"Uses Jenkinsfile<br/>Pipeline as Code<br/>Complex workflows<br/>Better version control"|G
+        
+        C -->|Option 3| F[Multibranch Pipeline]
+        F -->|"Auto-detects branches<br/>Creates pipeline per branch<br/>Uses Jenkinsfile<br/>Best for multi-branch projects"|G
+        
+        subgraph Build Process
+            G[Fetch Code]
+            G --> H[Build JAR with Maven]
+            H --> I[Build Docker Image]
+            I --> J[Push to DockerHub]
+        end
+    end
+    
+    subgraph Prerequisites
+        K[Install Maven]
+        L[Setup Docker]
+        M[Configure Git Credentials]
+    end
+    
+    K & L & M -.-> B
