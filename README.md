@@ -55,13 +55,7 @@ I also made sure it will trigger only on changes to the `java-maven-app-starting
 
 ![add-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/ad-be.png)
 
-
-
-
-
- use Maven to build the Java application, creating the JAR file.
-
-
+Now I'm going to create a new Freestyle job called `java-maven-build` that checks out the git repo, runs tests of the application code, then builds a JAR file.
 
 
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
