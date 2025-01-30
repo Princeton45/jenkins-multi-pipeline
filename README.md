@@ -63,6 +63,29 @@ Then below you can see, when the job ran it created a `/target` folder locally i
 
 ![jar](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/jar.png)
 
+### 3. Make Docker available in Jenkins
+
+I now have to make Docker available in Jenkins so that after building the application, we can convert it to a Docker image.
+
+For this, I am going to mount the docker runtime directory thats on the VM inside the Jenkins container as a volume, which will make Docker available inside the container.
+
+```bash
+docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
+```
+Then we need to fetch the latest version of docker inside the container and set the permissions (also making sure that you exec into the container as root)
+
+`curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall`
+
+We should also change the permissions on the `docker.sock` file so the `jenkins` service account user can utilize it for docker
+
+`chmod 666 /var/run/docker.sock`
+
+### 4. Building the Docker image
+
+Now that Docker is available in Jenkins, we can now add a step in the pipeline to build a Docker image afer building the application.
+
+
+
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
 
 Next, I created a scripted Pipeline job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
