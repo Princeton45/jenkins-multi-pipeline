@@ -1,6 +1,8 @@
 # My Journey Building a CI Pipeline with Jenkins for a Java Maven App
 
-This documents my experience setting up a Continuous Integration (CI) pipeline using Jenkins for a Java application built with Maven. I created three different types of Jenkins jobs – Freestyle, Scripted Pipeline, and Multibranch Pipeline – each designed to automate the process of building the app, creating a Docker image, and pushing it to a private Docker Hub repository. The flow of each pipeline is as follows:
+This documents my experience setting up a Continuous Integration (CI) pipeline using Jenkins for a Java application built with Maven. I created three different types of Jenkins jobs – Freestyle, Scripted Pipeline, and Multibranch Pipeline – each designed to automate the process of building the app, creating a Docker image, and pushing it to a private Docker Hub repository. 
+
+The flow of each pipeline is as follows:
 
 1. **Connect to Git Repository:** Each pipeline starts by connecting to my application's Git repository to pull the latest code.
 2. **Build JAR:** Maven is used to build the Java application, resulting in a JAR file.
@@ -25,32 +27,26 @@ Here's a breakdown of how I configured the pipeline:
 
 ### 1. Jenkins Server and Tooling
 
-I started with a clean Jenkins server. I ensured that essential build tools like Maven and Node.js were installed directly within Jenkins, making them readily available for my pipeline jobs.
+I started with a clean Jenkins server. I ensured that essential build tools like Maven and Node.js were installed in Jenkins, making them readily available for my pipeline jobs.
 
-*   **Suggestions for Visuals:**
-    *   **Picture 1:** A screenshot of the Jenkins "Global Tool Configuration" page showing Maven and Node.js configured.
+Maven was already available as a plugin through `Jenkins Tools`.
 
-### 2. Docker Integration
+![maven-install](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/maven-install.jpg)
 
-To enable Docker operations within my pipeline, I installed Docker on the Jenkins server and configured the `jenkins` user to run Docker commands seamlessly.
+For Node.js and NPM, I installed those in the docker container that's running Jenkins
 
-*   **Suggestions for Visuals:**
-    *   **Picture 2:** My terminal showing the successful output of `docker info` run as the `jenkins` user, confirming Docker is accessible to Jenkins.
+`docker exec -u 0 -it ae9bb3e63ec1 /bin/bash` <-- the `-u 0` runs the container as root.
 
-### 3. Git Repository Credentials
+`curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh`. 
 
-I created credentials within Jenkins to allow it to securely connect to and pull code from my private Git repository.
+The `nodesource_setup.sh ` is a script that contains the commands needed to install node.js and npm.
 
-*   **Suggestions for Visuals:**
-    *   **Picture 3:** The Jenkins credentials page showing the stored credentials for my Git repository.
-
-### 4. Freestyle Jenkins Job
+### 2. Freestyle Jenkins Job - Creation, Git & Docker connection
 
 My first job type was a Freestyle project. I configured it to pull the latest code from my Git repository and use Maven to build the Java application, creating the JAR file.
 
-*   **Suggestions for Visuals:**
-    *   **Picture 4:** A screenshot of the successful build history of the Freestyle job in Jenkins, showing green checkmarks for each build.
-    *   **Picture 5:** The Jenkins console output for a successful Freestyle build, highlighting the `BUILD SUCCESS` message from Maven.
+
+
 
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
 
