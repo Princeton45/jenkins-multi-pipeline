@@ -53,16 +53,15 @@ I configured it to pull the latest code from my Git repository, authenticating w
 
 I also made sure it will trigger only on changes to the `java-maven-app-starting-code` by creating an additioanl behaviour `Polling ignores commits in certain paths`.
 
-![add-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/ad-be.png)
+![add-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/add-be.png)
 
+I created another freestyle job called `java-maven-build` that takes the Java Maven app, runs tests and the builds a Jar file.
 
+![java-maven-build](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/java-maven-build.png)
 
+Then below you can see, when the job ran it created a `/target` folder locally in the Jenkins Docker container and then created the `.jar` file.
 
-
- use Maven to build the Java application, creating the JAR file.
-
-
-
+![jar](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/jar.png)
 
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
 
