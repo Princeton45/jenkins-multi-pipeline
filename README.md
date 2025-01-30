@@ -105,7 +105,7 @@ I edited the pipeline to push the created image into Docker Hub repository.
 I created a `docker.daemon` file in `/etc/docker` to add the `insecure-registries`
  parameter since our Nexus setup is configured to use HTTP and not HTTPS
 
-![insecure](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/insecure.png)
+![insecure](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/insecure11.png)
 
 Now I pushed the Docker image to the Nexus Repository with this build step
 
