@@ -82,7 +82,39 @@ We should also change the permissions on the `docker.sock` file so the `jenkins`
 
 ### 4. Building the Docker image
 
-Now that Docker is available in Jenkins, we can now add a step in the pipeline to build a Docker image afer building the application.
+Now that Docker is available in Jenkins, we can now add a step in the pipeline to build a Docker image using the built JAR artifact.
+
+![docker](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/docker-step.png)
+
+Remember we can use the `Execute Shell` option because we installed Docker inside the container (not as a plugin on Jenkins)
+
+Now in the container, we can see the Docker image that was just built.
+
+![built-image](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/built-image.png)
+
+### 5. Push Image to Docker Hub
+
+I edited the pipeline to push the created image into Docker Hub repository.
+
+![dockerhub](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/dockerhub.png)
+
+![dockerhub](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/dockerhub2.png)
+
+### 6. Push Docker Image to Nexus Repository
+
+I created a `docker.daemon` file in `/etc/docker` to add the `insecure-registries`
+ parameter since our Nexus setup is configured to use HTTP and not HTTPS
+
+![insecure](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/insecure.png)
+
+Now I pushed the Docker image to the Nexus Repository with this build step
+
+![nexus](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/nexus.png)
+
+Here it the docker that was pushed to my Nexus repository:
+
+![nexus](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/nexus-push.png)
+
 
 
 
