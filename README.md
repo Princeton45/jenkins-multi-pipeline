@@ -31,7 +31,7 @@ I started with a clean Jenkins server. I ensured that essential build tools like
 
 Maven was already available as a plugin through `Jenkins Tools`.
 
-![maven-install](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/maven-install.jpg)
+![maven-install](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/maven-install.png)
 
 For Node.js and NPM, I installed those in the docker container that's running Jenkins
 
@@ -43,7 +43,23 @@ The `nodesource_setup.sh ` is a script that contains the commands needed to inst
 
 ### 2. Freestyle Jenkins Job - Creation, Git & Docker connection
 
-My first job type was a Freestyle project. I configured it to pull the latest code from my Git repository and use Maven to build the Java application, creating the JAR file.
+My first job type was a Freestyle job called `my-job`.
+
+![freestyle](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/maven-job.png)
+
+I configured it to pull the latest code from my Git repository, authenticating with a PAT token with least privilege.
+
+![git-connection](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/git-connection.png)
+
+I also made sure it will trigger only on changes to the `java-maven-app-starting-code` by creating an additioanl behaviour `Polling ignores commits in certain paths`.
+
+![ad-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/ad-be.png)
+
+
+
+
+
+ use Maven to build the Java application, creating the JAR file.
 
 
 
