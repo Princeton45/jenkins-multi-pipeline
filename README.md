@@ -53,7 +53,7 @@ I configured it to pull the latest code from my Git repository, authenticating w
 
 I also made sure it will trigger only on changes to the `java-maven-app-starting-code` by creating an additioanl behaviour `Polling ignores commits in certain paths`.
 
-![ad-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/ad-be.png)
+![add-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/ad-be.png)
 
 
 
