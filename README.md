@@ -122,9 +122,7 @@ Here it the docker that was pushed to my Nexus repository:
 
 Next, I created a scripted Pipeline job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
 
-*   **Suggestions for Visuals:**
-    *   **Picture 6:** A screenshot of my `Jenkinsfile` in a code editor, showcasing the pipeline stages.
-    *   **Picture 7:** The "Pipeline Steps" view in Jenkins for a successful pipeline run, showing each stage (Checkout, Build, Docker Build, Docker Push) completed.
+
 
 ### 6. Multibranch Pipeline Jenkins Job
 
