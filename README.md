@@ -122,7 +122,73 @@ Here it the docker that was pushed to my Nexus repository:
 
 Next, I created a scripted Pipeline job which does the same as the freestyle job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
 
+`Jenkinsfile`
+```groovy
+def gv
 
+pipeline {
+    agent any
+    tools {
+        maven "maven-3.9"
+    }
+    stages {
+        stage("init") {
+            steps {
+                script {
+                    gv = load "script.groovy"
+                }
+            }
+        }
+        stage("build jar") {
+            steps {
+                script {
+                    gv.buildJar()
+                }
+            }
+        }
+        stage("build image") {
+            steps {
+                script {
+                    gv.buildImage()
+                    
+                }
+            }
+        }
+        stage("deploy") {            
+            steps {
+                script {
+                    gv.deployApp()
+                }
+            }
+        }                 
+    }      
+}
+```
+
+`script.groovy`
+```groovy
+def buildJar() {
+    echo 'building the application...'
+    sh "mvn package"
+}
+
+def buildImage() {
+    echo "building the docker image..."
+    withCredentials([usernamePassword(credentialsId: "docker-hub-repo", passwordVariable: "PASS", usernameVariable: "USER")]) {
+    sh "docker build -t prince450/demo-app:jma-2.0 ."
+    sh "echo $PASS | docker login -u $USER --password-stdin"
+    sh "docker push prince450/demo-app:jma-2.0"
+    }
+}
+
+def deployApp() {
+    echo 'deploying the application...'
+}
+
+return this
+```
+
+The `Jenkinsfile` is cleaner because I'm just referencing the functions from the external `script.groovy` where all the logic is being defined.
 
 
 ### 6. Multibranch Pipeline Jenkins Job
