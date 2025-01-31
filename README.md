@@ -117,8 +117,6 @@ Now I pushed the Docker image to the Nexus Repository with this build step
 Here it the docker that was pushed to my Nexus repository:
 
 ![nexus](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/nexus-push.png)
->>>>>>> eca6d412f582e33823b26359aca4093c873c609d
-
 
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
 
