@@ -4,7 +4,7 @@ pipeline {
         stage("test") {
             steps {
                 script{
-                    echo "Building the application..."
+                    echo "testing the application..."
                     echo "Executing pipeline for branch $BRANCH_NAME"
                 }
             }
@@ -17,7 +17,7 @@ pipeline {
             }
             steps {
                 script{
-                    echo "Testing the application..."
+                    echo "Building the application..."
                 }
             }
         }
