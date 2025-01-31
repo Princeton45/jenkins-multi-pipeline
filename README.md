@@ -198,6 +198,50 @@ The pipeline will run the `Test`, `Build` and `Deploy` stages for pushes detecte
 
 Best practice in a company is to have the feature branches run the test and optionally the build stage. Then development branches to run the test and build stages. Lastly, the main/master branch (production) would run `Test`, `Build` and `Deploy` stages
 
+NOTE: Each branch will always share the same Jenkinsfile.
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage("test") {
+            steps {
+                script{
+                    echo "testing the application..."
+                    echo "Executing pipeline for branch $BRANCH_NAME"
+                }
+            }
+        }
+        stage("build") {
+            when {
+                expression {
+                    BRANCH_NAME == "main"
+                }
+            }
+            steps {
+                script{
+                    echo "Building the application..."
+                }
+            }
+        }
+        stage("deploy") {
+            when {
+                expression {
+                    BRANCH_NAME == "main"
+                }
+            }
+            steps {
+                script{
+                    echo "Deploying the application..."
+                }
+            }
+        }
+    }
+}
+```
+
+![multibranch](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/multibranch.png)
+
 
 *   **Suggestions for Visuals:**
     *   **Picture 8:** The Jenkins dashboard showing the Multibranch Pipeline job with multiple branches (e.g., `main`, `develop`) and their build status.
