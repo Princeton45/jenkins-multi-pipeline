@@ -120,7 +120,8 @@ Here it the docker that was pushed to my Nexus repository:
 
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
 
-Next, I created a scripted Pipeline job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
+Next, I created a scripted Pipeline job which does the same as the freestyle job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
+
 
 
 
