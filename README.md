@@ -55,9 +55,9 @@ I also made sure it will trigger only on changes to the `java-maven-app-starting
 
 ![add-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/add-be.png)
 
-<<<<<<< HEAD
+
 Now I'm going to create a new Freestyle job called `java-maven-build` that checks out the git repo, runs tests of the application code, then builds a JAR file.
-=======
+
 I created another freestyle job called `java-maven-build` that takes the Java Maven app, runs tests and the builds a Jar file.
 
 ![java-maven-build](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/java-maven-build.png)
