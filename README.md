@@ -116,8 +116,6 @@ Here it the docker that was pushed to my Nexus repository:
 ![nexus](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/nexus-push.png)
 
 
-
-
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
 
 Next, I created a scripted Pipeline job which does the same as the freestyle job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
@@ -190,15 +188,23 @@ return this
 
 The `Jenkinsfile` is cleaner because I'm just referencing the functions from the external `script.groovy` where all the logic is being defined.
 
+![pipeline](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/pipeline.png)
 
 ### 6. Multibranch Pipeline Jenkins Job
 
-Finally, I set up a Multibranch Pipeline job. This automatically detected branches in my Git repository and created corresponding pipelines for each branch. Each branch pipeline followed the same steps as the scripted pipeline: checkout, build JAR, build Docker image, and push to Docker Hub.
+Finally, I set up a Multibranch Pipeline job. This automatically detected branches in my Git repository and created corresponding pipelines for each branch. 
+
+For example, when the main branch pipeline is triggered, it should only build and deploy. When a feature branch is triggered, it should only test the code and optionally build.
+
+feature branches  → Test → (optional) Build
+development      → Test → Build
+main/master      → Test → Build → Deploy
+
+This is usually best practice in a comapny env.
+
+
 
 *   **Suggestions for Visuals:**
     *   **Picture 8:** The Jenkins dashboard showing the Multibranch Pipeline job with multiple branches (e.g., `main`, `develop`) and their build status.
     *   **Picture 9:** My Docker Hub repository showing the different image tags pushed by the Multibranch Pipeline, corresponding to different branches.
 
-## Conclusion
-
-And that's a wrap! I now have a fully automated CI pipeline powered by Jenkins that handles building, containerizing, and deploying my Java application. I explored different job types, each with its strengths, and ended up with a robust solution that fits my needs. This setup saves me tons of time and ensures that my application is always ready to be deployed. I hope my journey helps you in setting up your own CI pipelines! Feel free to experiment and adapt these concepts to your projects. Happy coding!
