@@ -51,29 +51,164 @@ I configured it to pull the latest code from my Git repository, authenticating w
 
 ![git-connection](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/git-connection.png)
 
-I also made sure it will trigger only on changes to the `java-maven-app-starting-code` by creating an additioanl behaviour `Polling ignores commits in certain paths`.
+I also made sure it will trigger only on changes to the `java-maven-app-starting-code` by creating an additional behaviour `Polling ignores commits in certain paths`.
 
-![add-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/ad-be.png)
+![add-be](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/add-be.png)
 
+<<<<<<< HEAD
 Now I'm going to create a new Freestyle job called `java-maven-build` that checks out the git repo, runs tests of the application code, then builds a JAR file.
+=======
+I created another freestyle job called `java-maven-build` that takes the Java Maven app, runs tests and the builds a Jar file.
+
+![java-maven-build](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/java-maven-build.png)
+
+Then below you can see, when the job ran it created a `/target` folder locally in the Jenkins Docker container and then created the `.jar` file.
+
+![jar](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/jar.png)
+
+### 3. Make Docker available in Jenkins
+
+I now have to make Docker available in Jenkins so that after building the application, we can convert it to a Docker image.
+
+For this, I am going to mount the docker runtime directory thats on the VM inside the Jenkins container as a volume, which will make Docker available inside the container.
+
+```bash
+docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
+```
+Then we need to fetch the latest version of docker inside the container and set the permissions (also making sure that you exec into the container as root)
+
+`curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall`
+
+We should also change the permissions on the `docker.sock` file so the `jenkins` service account user can utilize it for docker
+
+`chmod 666 /var/run/docker.sock`
+
+### 4. Building the Docker image
+
+Now that Docker is available in Jenkins, we can now add a step in the pipeline to build a Docker image using the built JAR artifact.
+
+![docker](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/docker-step.png)
+
+Remember we can use the `Execute Shell` option because we installed Docker inside the container (not as a plugin on Jenkins)
+
+Now in the container, we can see the Docker image that was just built.
+
+![built-image](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/built-image.png)
+
+### 5. Push Image to Docker Hub
+
+I edited the pipeline to push the created image into Docker Hub repository.
+
+![dockerhub](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/dockerhub.png)
+
+![dockerhub](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/dockerhub2.png)
+
+### 6. Push Docker Image to Nexus Repository
+
+I created a `docker.daemon` file in `/etc/docker` to add the `insecure-registries`
+ parameter since our Nexus setup is configured to use HTTP and not HTTPS
+
+![insecure](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/insecure11.png)
+
+Now I pushed the Docker image to the Nexus Repository with this build step
+
+![nexus](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/nexus.png)
+
+Here it the docker that was pushed to my Nexus repository:
+
+![nexus](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/nexus-push.png)
+>>>>>>> eca6d412f582e33823b26359aca4093c873c609d
 
 
 ### 5. Pipeline Jenkins Job (Scripted Pipeline)
 
-Next, I created a scripted Pipeline job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
+Next, I created a scripted Pipeline job which does the same as the freestyle job using a `Jenkinsfile`. This allowed me to define the entire pipeline as code. The pipeline checked out the code, built the JAR with Maven, built a Docker image, and finally pushed the image to my private Docker Hub repository.
 
-*   **Suggestions for Visuals:**
-    *   **Picture 6:** A screenshot of my `Jenkinsfile` in a code editor, showcasing the pipeline stages.
-    *   **Picture 7:** The "Pipeline Steps" view in Jenkins for a successful pipeline run, showing each stage (Checkout, Build, Docker Build, Docker Push) completed.
+`Jenkinsfile`
+```groovy
+def gv
+
+pipeline {
+    agent any
+    tools {
+        maven "maven-3.9"
+    }
+    stages {
+        stage("init") {
+            steps {
+                script {
+                    gv = load "script.groovy"
+                }
+            }
+        }
+        stage("build jar") {
+            steps {
+                script {
+                    gv.buildJar()
+                }
+            }
+        }
+        stage("build image") {
+            steps {
+                script {
+                    gv.buildImage()
+                    
+                }
+            }
+        }
+        stage("deploy") {            
+            steps {
+                script {
+                    gv.deployApp()
+                }
+            }
+        }                 
+    }      
+}
+```
+
+`script.groovy`
+```groovy
+def buildJar() {
+    echo 'building the application...'
+    sh "mvn package"
+}
+
+def buildImage() {
+    echo "building the docker image..."
+    withCredentials([usernamePassword(credentialsId: "docker-hub-repo", passwordVariable: "PASS", usernameVariable: "USER")]) {
+    sh "docker build -t prince450/demo-app:jma-2.0 ."
+    sh "echo $PASS | docker login -u $USER --password-stdin"
+    sh "docker push prince450/demo-app:jma-2.0"
+    }
+}
+
+def deployApp() {
+    echo 'deploying the application...'
+}
+
+return this
+```
+
+The `Jenkinsfile` is cleaner because I'm just referencing the functions from the external `script.groovy` where all the logic is being defined.
+
+![pipeline](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/pipeline.png)
 
 ### 6. Multibranch Pipeline Jenkins Job
 
-Finally, I set up a Multibranch Pipeline job. This automatically detected branches in my Git repository and created corresponding pipelines for each branch. Each branch pipeline followed the same steps as the scripted pipeline: checkout, build JAR, build Docker image, and push to Docker Hub.
+Finally, I set up a Multibranch Pipeline job. This automatically detected branches in my Git repository and created corresponding pipelines for each branch. 
+
+For example, when the main branch pipeline is triggered, it should only build and deploy. When a feature branch is triggered, it should only test the code and optionally build.
+
+feature branches  → Test → (optional) Build
+development      → Test → Build
+main/master      → Test → Build → Deploy
+
+This is usually best practice in a comapny env.
+
+
 
 *   **Suggestions for Visuals:**
     *   **Picture 8:** The Jenkins dashboard showing the Multibranch Pipeline job with multiple branches (e.g., `main`, `develop`) and their build status.
     *   **Picture 9:** My Docker Hub repository showing the different image tags pushed by the Multibranch Pipeline, corresponding to different branches.
 
-## Conclusion
-
-And that's a wrap! I now have a fully automated CI pipeline powered by Jenkins that handles building, containerizing, and deploying my Java application. I explored different job types, each with its strengths, and ended up with a robust solution that fits my needs. This setup saves me tons of time and ensures that my application is always ready to be deployed. I hope my journey helps you in setting up your own CI pipelines! Feel free to experiment and adapt these concepts to your projects. Happy coding!
