@@ -21,18 +21,15 @@ pipeline {
                         sh "echo $PASS | docker login -u $USER --password-stdin"
                         sh "docker push prince450/demo-app:jma-2.0"
                     }
-                 }
-            }
-        }
-        stages {
-        stage("deploy") {
-            steps {
-                script {
-                    echo ""
                 }
             }
-          }
-      
+        }
+        stage("deploy") {            
+            steps {
+                script {
+                    echo "Deploying application..."
+                }
+            }
         }                 
-  }      
-}                    
+    }      
+}
