@@ -194,7 +194,7 @@ The `Jenkinsfile` is cleaner because I'm just referencing the functions from the
 
 Finally, I set up a Multibranch Pipeline job. This automatically detected branches in my Git repository and created corresponding pipelines for each branch. 
 
-The pipeline will run the `Test`, `Build` and `Deploy` stages for pushes detected to the master branch and only run the `Test` stage for all other branches.
+The pipeline will run the `Test`, `Build` and `Deploy` stages for pushes detected to the `main` branch and only run the `Test` stage for the 'jenkins-jobs` branch.
 
 Best practice in a company is to have the feature branches run the test and optionally the build stage. Then development branches to run the test and build stages. Lastly, the main/master branch (production) would run `Test`, `Build` and `Deploy` stages
 
@@ -242,8 +242,6 @@ pipeline {
 
 ![multibranch](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/multibranch.png)
 
+![jenkins-jobs](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/jenkins-jobs.png)
 
-*   **Suggestions for Visuals:**
-    *   **Picture 8:** The Jenkins dashboard showing the Multibranch Pipeline job with multiple branches (e.g., `main`, `develop`) and their build status.
-    *   **Picture 9:** My Docker Hub repository showing the different image tags pushed by the Multibranch Pipeline, corresponding to different branches.
-
+![main](https://github.com/Princeton45/jenkins-multi-pipeline/blob/main/images/main.png)
