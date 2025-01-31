@@ -194,14 +194,9 @@ The `Jenkinsfile` is cleaner because I'm just referencing the functions from the
 
 Finally, I set up a Multibranch Pipeline job. This automatically detected branches in my Git repository and created corresponding pipelines for each branch. 
 
-For example, when the main branch pipeline is triggered, it should only build and deploy. When a feature branch is triggered, it should only test the code and optionally build.
+The pipeline will run the `Test`, `Build` and `Deploy` stages for pushes detected to the master branch and only run the `Test` stage for all other branches.
 
-feature branches  → Test → (optional) Build
-development      → Test → Build
-main/master      → Test → Build → Deploy
-
-This is usually best practice in a comapny env.
-
+Best practice in a company is to have the feature branches run the test and optionally the build stage. Then development branches to run the test and build stages. Lastly, the main/master branch (production) would run `Test`, `Build` and `Deploy` stages
 
 
 *   **Suggestions for Visuals:**
